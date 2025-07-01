@@ -155,7 +155,6 @@ export const addNewBook = async (req, res, next) => {
                   if (tokenRole !== "seller"){
                       return next(new HttpError('invalid',404))
                   } else {
-console.log(req.file,"filee")
                   const imagePath = req.file.path
               
                   const newBook = await new bookModel(

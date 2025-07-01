@@ -39,7 +39,7 @@ const bookSchema = new mongoose.Schema(
 
         category:{
              type: String,
-             enum: ['fiction', 'Non-fiction', 'Comics', 'Education', 'Biography', 'Other'],
+             enum: ['Fiction', 'Non-fiction', 'Comics', 'Education', 'Biography', 'Fantasy', 'Science', 'Other'],
              default: 'Other'
         },
 

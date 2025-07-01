@@ -34,11 +34,28 @@ export const registerUser = async (req , res, next) => {
                 if (!newUser) {
                     return next(new HttpError('registration failed',500))
                 } else {
-                    res.status(200).json({
-                        status: true,
-                        message: 'registration successful',
-                        data: null
-                    })
+                    const token = jwt.sign(
+                        {id:newUser._id, role:newUser.role}, //data to fetch
+                        process.env.JWT_SECRET,
+                        {expiresIn: process.env.JWT_TOKEN_EXPIRY}
+                    )
+                    if (!token) {
+                        return next(new HttpError('token generation failed', 403))
+                    } else {
+
+                        res.status(200).json({
+                            status: true,
+                            message: 'registration successful',
+                            data: {
+                                id: newUser._id,
+                                username: newUser.username,
+                                email: newUser.email,
+                                role: newUser.role,
+                                image: newUser.image
+                            },
+                            token
+                        })
+                    } 
                 }
             }
         }

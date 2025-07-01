@@ -4,6 +4,7 @@ import dotenv, { config } from 'dotenv'
 import connectDB from './data/connectDB.js'
 import bookRoutes from './routes/bookRoutes.js'
 import userRoutes from './routes/userRoutes.js'
+import authRoutes from './routes/authRoutes.js'
 
 dotenv.config()
 
@@ -18,6 +19,8 @@ connectDB()
 app.use('/uploads', express.static('uploads'))
 app.use(express.json())
 app.use(cors())
+
+app.use('/api/auth',authRoutes)
 app.use('/api/books', bookRoutes )
 app.use('/api/user',userRoutes)
 

@@ -36,11 +36,20 @@ export const editProfile = async (req, res, next) => {
       
     const { username, email } = req.body;
     const { userid } = req.userdata;
-    const imagePath = req.file.path;
+    const imagePath = req.file ? req.file.path : null;
+
+    const updatedData = {
+      username,
+      email
+    }
+
+    if(imagePath){
+      updatedData.image = imagePath  //it work only when we add a img
+    }
 
     const updatedUser = await User.findOneAndUpdate(
       { _id: userid },
-      { username, email, image:imagePath },
+      updatedData,
       { new: true }
     );
 
