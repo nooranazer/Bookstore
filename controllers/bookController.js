@@ -143,7 +143,6 @@ export const addNewBook = async (req, res, next) => {
               const {
                       title,
                       authorname, 
-          
                       description, 
                       price, 
                       stock,

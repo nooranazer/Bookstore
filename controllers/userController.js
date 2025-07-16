@@ -59,7 +59,7 @@ export const editProfile = async (req, res, next) => {
       return res.status(200).json({
         status: true,
         message: 'Profile updated successfully',
-        data: null
+        data: updatedUser
       });
     }
   }

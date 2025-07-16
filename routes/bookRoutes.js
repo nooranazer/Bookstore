@@ -13,7 +13,6 @@ bookRoutes.get('/list', listBooks )
 bookRoutes.get('/view/:id', getOneBook)
 // bookRoutes.get('/list/:id', getOneBook)
 
-
 bookRoutes.post('/add',upload.single('image'), [
     check("title")
          .notEmpty().withMessage("Title is required"),
