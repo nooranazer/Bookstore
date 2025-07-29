@@ -3,38 +3,83 @@ import HttpError from "../middlewares/httpError.js";
 import bookModel from "../models/bookModel.js";
 
 //list all books
-export const listBooks = async (req, res , next) => {
-     try{
-        const { userid: sellerID, role: tokenRole} = req.userdata;
+// export const listBooks = async (req, res , next) => {
+  
+//      try{
+//         const { userid: sellerID, role: tokenRole} = req.userdata;
 
-        let books = []
+//         let books = []
 
-        if (tokenRole === "buyer") {
-          books = await bookModel.find({is_deleted: false})
-          .populate({
-            path: "seller",  //with which one add
-            select: "username" //which is extra data
-          })
-        } else {
-            books = await bookModel.find({is_deleted: false, seller: sellerID})
-            .populate({
-              path: "seller",
-              select: "username"
-            })
-        }
-          if (books ) {
-            res.status(200).json({
-              status: true,
-              message: "",
-              data: books 
-            })
-          }
+//         if (tokenRole === "buyer") {
+//           books = await bookModel.find({is_deleted: false})
+//           .populate({
+//             path: "seller",  //with which one add
+//             select: "username" //which is extra data
+//           })
+//         } else {
+//             books = await bookModel.find({is_deleted: false, seller: sellerID})
+//             .populate({
+//               path: "seller",
+//               select: "username"
+//             })
+//         }
+//           if (books ) {
+//             res.status(200).json({
+//               status: true,
+//               message: "",
+//               data: books 
+//             })
+//           }
         
-    } catch (error) {
-        return next(new HttpError('server error',500))
+//     } catch (error) {
+//         return next(new HttpError('server error',500))
+//     }
+
+// }
+
+// list all books
+export const listBooks = async (req, res, next) => {
+  try {
+    const { userid: sellerID, role: tokenRole } = req.userdata;
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = 3;
+    // const limit = parseInt(req.query.limit) || 6;
+    const skip = (page - 1) * limit;
+
+    let books = [];
+    let filter = { is_deleted: false };
+
+    if (tokenRole === "buyer") {
+    } else {
+      filter.seller = sellerID;
     }
 
-}
+    const totalBooks = await bookModel.countDocuments(filter);
+
+    books = await bookModel.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .populate({
+        path: "seller",
+        select: "username"
+      });
+
+    if (books) {
+      res.status(200).json({
+        status: true,
+        message: "",
+        data: books,
+        currentPage: page,
+        totalPages: Math.ceil(totalBooks / limit)
+      });
+    }
+
+  } catch (error) {
+    return next(new HttpError('server error', 500));
+  }
+};
+
 
 // view sellers book
 // export const listSellerBook = async (req, res, next) => {
